@@ -22,9 +22,9 @@ select
 
 from ${ref("ai_hub_sharepoint", "calendar")} cal
 left join ${ref("ai_hub_sharepoint", "news_metadata")} news on date(news.published_at) = cal.calendar_date
-where cal.calendar_date <= current_date()
+where cal.calendar_date <= current_date("UTC-6") - interval 1 day -- because today's info has not been fully stored.
 ${when(
-    incremental(), 
+    incremental(),
     `and cal.calendar_date > (select max(date) from ${self()})`, //When incremental is True
     // when incremental is false
 )
